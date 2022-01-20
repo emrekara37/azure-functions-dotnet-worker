@@ -31,7 +31,13 @@ namespace Microsoft.Azure.Functions.Worker.Sdk
         internal const string ReadOnlyMemoryOfBytes = "System.ReadOnlyMemory`1<System.Byte>";
 
         internal const string ReturnBindingName = "$return";
-        internal const string HttpTriggerBindingType = "HttpTrigger";
+        internal const string HttpTriggerBindingType = "httpTrigger";
         internal const string IsBatchedKey = "IsBatched";
+
+        // NetFramework
+        internal const string NetCoreApp31 = "netcoreapp3.1";
+        internal const string Net60 = "net6.0";
+        internal const string Net50 = "net5.0";
+        internal const string AzureFunctionsVersion3 = "v3";
     }
 }

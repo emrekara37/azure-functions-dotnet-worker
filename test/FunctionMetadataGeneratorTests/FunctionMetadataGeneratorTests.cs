@@ -44,7 +44,7 @@ namespace Microsoft.Azure.Functions.SdkTests
                 AssertExpandoObject(b, new Dictionary<string, object>
                 {
                     { "Name", "myReq" },
-                    { "Type", "HttpTrigger" },
+                    { "Type", "httpTrigger" },
                     { "Direction", "In" },
                     { "authLevel", "Admin" },
                     { "methods", new[] { "get", "Post" } },
@@ -86,7 +86,7 @@ namespace Microsoft.Azure.Functions.SdkTests
                 AssertExpandoObject(b, new Dictionary<string, object>
                 {
                     { "Name", "myReq" },
-                    { "Type", "HttpTrigger" },
+                    { "Type", "httpTrigger" },
                     { "Direction", "In" },
                     { "authLevel", "Admin" },
                     { "methods", new[] { "get", "Post" } },
@@ -119,7 +119,7 @@ namespace Microsoft.Azure.Functions.SdkTests
                 AssertExpandoObject(b, new Dictionary<string, object>
                 {
                     { "Name", "myReq" },
-                    { "Type", "HttpTrigger" },
+                    { "Type", "httpTrigger" },
                     { "Direction", "In" },
                     { "authLevel", "Admin" },
                     { "methods", new[] { "get", "Post" } },
@@ -160,7 +160,8 @@ namespace Microsoft.Azure.Functions.SdkTests
 
             AssertDictionary(extensions, new Dictionary<string, string>
             {
-                { "Microsoft.Azure.WebJobs.Extensions.Storage", "4.0.4" }
+                { "Microsoft.Azure.WebJobs.Extensions.Storage.Queues", "5.0.0" },
+                { "Microsoft.Azure.WebJobs.Extensions.Storage.Blobs", "5.0.0" },
             });
 
             void ValidateQueueTrigger(ExpandoObject b)
@@ -168,7 +169,7 @@ namespace Microsoft.Azure.Functions.SdkTests
                 AssertExpandoObject(b, new Dictionary<string, object>
                 {
                     { "Name", "queuePayload" },
-                    { "Type", "QueueTrigger" },
+                    { "Type", "queueTrigger" },
                     { "Direction", "In" },
                     { "Connection", "MyConnection" },
                     { "queueName", "queueName" },
@@ -181,7 +182,7 @@ namespace Microsoft.Azure.Functions.SdkTests
                 AssertExpandoObject(b, new Dictionary<string, object>
                 {
                     { "Name", "$return" },
-                    { "Type", "Blob" },
+                    { "Type", "blob" },
                     { "Direction", "Out" },
                     { "blobPath", "container1/hello.txt" },
                     { "Connection", "MyOtherConnection" }
@@ -197,7 +198,7 @@ namespace Microsoft.Azure.Functions.SdkTests
                 AssertExpandoObject(b, new Dictionary<string, object>
                 {
                     { "Name", "blob" },
-                    { "Type", "BlobTrigger" },
+                    { "Type", "blobTrigger" },
                     { "Direction", "In" },
                     { "blobPath", "container2/%file%" },
                     { "DataType", "String" }
@@ -209,7 +210,7 @@ namespace Microsoft.Azure.Functions.SdkTests
                 AssertExpandoObject(b, new Dictionary<string, object>
                 {
                     { "Name", "$return" },
-                    { "Type", "Queue" },
+                    { "Type", "queue" },
                     { "Direction", "Out" },
                     { "queueName", "queue2" },
                 });
@@ -235,7 +236,7 @@ namespace Microsoft.Azure.Functions.SdkTests
                 AssertExpandoObject(b, new Dictionary<string, object>
                 {
                     { "Name", "timer" },
-                    { "Type", "TimerTrigger" },
+                    { "Type", "timerTrigger" },
                     { "Direction", "In" },
                     { "schedule", "0 0 0 * * *" },
                     { "RunOnStartup", false }
@@ -263,7 +264,8 @@ namespace Microsoft.Azure.Functions.SdkTests
 
             AssertDictionary(extensions, new Dictionary<string, string>
             {
-                { "Microsoft.Azure.WebJobs.Extensions.Storage", "4.0.4" }
+                { "Microsoft.Azure.WebJobs.Extensions.Storage.Queues", "5.0.0" },
+                { "Microsoft.Azure.WebJobs.Extensions.Storage.Blobs", "5.0.0" },
             });
 
             void ValidateQueueTrigger(ExpandoObject b)
@@ -271,7 +273,7 @@ namespace Microsoft.Azure.Functions.SdkTests
                 AssertExpandoObject(b, new Dictionary<string, object>
                 {
                     { "Name", "queuePayload" },
-                    { "Type", "QueueTrigger" },
+                    { "Type", "queueTrigger" },
                     { "Direction", "In" },
                     { "Connection", "MyConnection" },
                     { "queueName", "queueName" },
@@ -284,7 +286,7 @@ namespace Microsoft.Azure.Functions.SdkTests
                 AssertExpandoObject(b, new Dictionary<string, object>
                 {
                     { "Name", "blobOutput" },
-                    { "Type", "Blob" },
+                    { "Type", "blob" },
                     { "Direction", "Out" },
                     { "blobPath", "container1/hello.txt" },
                     { "Connection", "MyOtherConnection" },
@@ -297,7 +299,7 @@ namespace Microsoft.Azure.Functions.SdkTests
                 AssertExpandoObject(b, new Dictionary<string, object>
                 {
                     { "Name", "queueOutput" },
-                    { "Type", "Queue" },
+                    { "Type", "queue" },
                     { "Direction", "Out" },
                     { "queueName", "queue2" },
                     { "DataType", "String" }
@@ -325,7 +327,7 @@ namespace Microsoft.Azure.Functions.SdkTests
 
             AssertDictionary(extensions, new Dictionary<string, string>
             {
-                { "Microsoft.Azure.WebJobs.Extensions.Storage", "4.0.4" }
+                { "Microsoft.Azure.WebJobs.Extensions.Storage.Queues", "5.0.0" }
             });
 
             void ValidateHttpTrigger(ExpandoObject b)
@@ -333,7 +335,7 @@ namespace Microsoft.Azure.Functions.SdkTests
                 AssertExpandoObject(b, new Dictionary<string, object>
                 {
                     { "Name", "req" },
-                    { "Type", "HttpTrigger" },
+                    { "Type", "httpTrigger" },
                     { "Direction", "In" },
                     { "methods", new[] { "get" } },
                     { "DataType", "String" }
@@ -355,7 +357,7 @@ namespace Microsoft.Azure.Functions.SdkTests
                 AssertExpandoObject(b, new Dictionary<string, object>
                 {
                     { "Name", "queueOutput" },
-                    { "Type", "Queue" },
+                    { "Type", "queue" },
                     { "Direction", "Out" },
                     { "queueName", "queue2" },
                     { "DataType", "String" }
@@ -387,7 +389,7 @@ namespace Microsoft.Azure.Functions.SdkTests
                 AssertExpandoObject(b, new Dictionary<string, object>
                 {
                     { "Name", "req" },
-                    { "Type", "HttpTrigger" },
+                    { "Type", "httpTrigger" },
                     { "Direction", "In" },
                     { "methods", new[] { "get" } },
                     { "DataType", "String" }
@@ -458,7 +460,7 @@ namespace Microsoft.Azure.Functions.SdkTests
                 b => ValidateTrigger(b, cardinalityMany));
 
             AssertDictionary(extensions, new Dictionary<string, string>(){
-                { "Microsoft.Azure.WebJobs.Extensions.EventHubs", "4.2.0" }
+                { "Microsoft.Azure.WebJobs.Extensions.EventHubs", "5.0.0-beta.6" }
             });
 
             void ValidateTrigger(ExpandoObject b, bool many)
@@ -466,7 +468,7 @@ namespace Microsoft.Azure.Functions.SdkTests
                 var expected = new Dictionary<string, object>()
                 {
                     { "Name", "input" },
-                    { "Type", "EventHubTrigger" },
+                    { "Type", "eventHubTrigger" },
                     { "Direction", "In" },
                     { "eventHubName", "test" },
                     { "Connection", "EventHubConnectionAppSetting" }
@@ -492,12 +494,56 @@ namespace Microsoft.Azure.Functions.SdkTests
 
         [Fact]
         public void CardinalityMany_WithNotIterableTypeThrows()
-        { 
+        {
             var generator = new FunctionMetadataGenerator();
             var typeDef = TestUtility.GetTypeDefinition(typeof(EventHubNotBatched));
 
             var exception = Assert.Throws<FunctionsMetadataGenerationException>(() => generator.GenerateFunctionMetadata(typeDef));
             Assert.Contains("Function is configured to process events in batches but parameter type is not iterable", exception.Message);
+        }
+
+        [Fact]
+        public void EnableImplicitRegistration_NotSet()
+        {
+            // This test assembly explicitly has an ExtensionInformationAttribute, without setting EnableImplicitRegistration
+            var generator = new FunctionMetadataGenerator();
+            var module = ModuleDefinition.ReadModule(_thisAssembly.Location);
+
+            generator.GenerateFunctionMetadata(module);
+            Assert.Empty(generator.Extensions);
+        }
+
+        [Fact]
+        public void EnableImplicitRegistration_True()
+        {
+            var generator = new FunctionMetadataGenerator();
+            var module = ModuleDefinition.ReadModule(_thisAssembly.Location);
+
+            // Inject enableImplicitRegistration = true into the constructor
+            var enableImplicitRegistrationParam = new CustomAttributeArgument(TestUtility.GetTypeDefinition(typeof(bool)), true);
+            var extInfo = module.Assembly.CustomAttributes.Single(p => p.AttributeType.FullName == Constants.ExtensionsInformationType);
+            extInfo.ConstructorArguments.Add(enableImplicitRegistrationParam);
+
+            generator.GenerateFunctionMetadata(module);
+            var extension = generator.Extensions.Single();
+
+            Assert.Equal("SdkTests", extension.Key);
+            Assert.Equal("1.0.0", extension.Value);
+        }
+
+        [Fact]
+        public void EnableImplicitRegistration_False()
+        {            
+            var generator = new FunctionMetadataGenerator();
+            var module = ModuleDefinition.ReadModule(_thisAssembly.Location);
+
+            // Inject enableImplicitRegistration = false into the constructor
+            var enableImplicitRegistrationParam = new CustomAttributeArgument(TestUtility.GetTypeDefinition(typeof(bool)), false);
+            var extInfo = module.Assembly.CustomAttributes.Single(p => p.AttributeType.FullName == Constants.ExtensionsInformationType);
+            extInfo.ConstructorArguments.Add(enableImplicitRegistrationParam);
+
+            generator.GenerateFunctionMetadata(module);
+            Assert.Empty(generator.Extensions);
         }
 
         private class EventHubNotBatched

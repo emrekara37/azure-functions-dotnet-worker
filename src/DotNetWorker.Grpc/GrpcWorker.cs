@@ -7,8 +7,9 @@ using System.Threading.Channels;
 using System.Threading.Tasks;
 using Azure.Core.Serialization;
 using Grpc.Core;
-using Microsoft.Azure.Functions.Worker.Context;
 using Microsoft.Azure.Functions.Worker.Context.Features;
+using Microsoft.Azure.Functions.Worker.Grpc;
+using Microsoft.Azure.Functions.Worker.Grpc.Features;
 using Microsoft.Azure.Functions.Worker.Grpc.Messages;
 using Microsoft.Azure.Functions.Worker.Invocation;
 using Microsoft.Azure.Functions.Worker.OutputBindings;
@@ -29,12 +30,15 @@ namespace Microsoft.Azure.Functions.Worker
         private readonly FunctionRpcClient _rpcClient;
         private readonly IInvocationFeaturesFactory _invocationFeaturesFactory;
         private readonly IOutputBindingsInfoProvider _outputBindingsInfoProvider;
+        private readonly IInputConversionFeatureProvider _inputConversionFeatureProvider;
         private readonly IMethodInfoLocator _methodInfoLocator;
         private readonly IOptions<GrpcWorkerStartupOptions> _startupOptions;
         private readonly ObjectSerializer _serializer;
 
         public GrpcWorker(IFunctionsApplication application, FunctionRpcClient rpcClient, GrpcHostChannel outputChannel, IInvocationFeaturesFactory invocationFeaturesFactory,
-            IOutputBindingsInfoProvider outputBindingsInfoProvider, IMethodInfoLocator methodInfoLocator, IOptions<GrpcWorkerStartupOptions> startupOptions, IOptions<WorkerOptions> workerOptions)
+            IOutputBindingsInfoProvider outputBindingsInfoProvider, IMethodInfoLocator methodInfoLocator, 
+            IOptions<GrpcWorkerStartupOptions> startupOptions, IOptions<WorkerOptions> workerOptions,
+            IInputConversionFeatureProvider inputConversionFeatureProvider)
         {
             if (outputChannel == null)
             {
@@ -51,6 +55,7 @@ namespace Microsoft.Azure.Functions.Worker
             _methodInfoLocator = methodInfoLocator ?? throw new ArgumentNullException(nameof(methodInfoLocator));
             _startupOptions = startupOptions ?? throw new ArgumentNullException(nameof(startupOptions));
             _serializer = workerOptions.Value.Serializer ?? throw new InvalidOperationException(nameof(workerOptions.Value.Serializer));
+            _inputConversionFeatureProvider = inputConversionFeatureProvider ?? throw new ArgumentNullException(nameof(inputConversionFeatureProvider));
         }
 
         public async Task StartAsync(CancellationToken token)
@@ -116,7 +121,7 @@ namespace Microsoft.Azure.Functions.Worker
             if (request.ContentCase == MsgType.InvocationRequest)
             {
                 responseMessage.InvocationResponse = await InvocationRequestHandlerAsync(request.InvocationRequest, _application,
-                    _invocationFeaturesFactory, _serializer, _outputBindingsInfoProvider);
+                    _invocationFeaturesFactory, _serializer, _outputBindingsInfoProvider, _inputConversionFeatureProvider);
             }
             else if (request.ContentCase == MsgType.WorkerInitRequest)
             {
@@ -144,10 +149,11 @@ namespace Microsoft.Azure.Functions.Worker
         }
 
         internal static async Task<InvocationResponse> InvocationRequestHandlerAsync(InvocationRequest request, IFunctionsApplication application,
-            IInvocationFeaturesFactory invocationFeaturesFactory, ObjectSerializer serializer, IOutputBindingsInfoProvider outputBindingsInfoProvider)
+            IInvocationFeaturesFactory invocationFeaturesFactory, ObjectSerializer serializer, 
+            IOutputBindingsInfoProvider outputBindingsInfoProvider,
+            IInputConversionFeatureProvider functionInputConversionFeatureProvider)
         {
             FunctionContext? context = null;
-            FunctionInvocation? invocation = null;
             InvocationResponse response = new()
             {
                 InvocationId = request.InvocationId
@@ -155,13 +161,19 @@ namespace Microsoft.Azure.Functions.Worker
 
             try
             {
-                invocation = new GrpcFunctionInvocation(request);
+                var invocation = new GrpcFunctionInvocation(request);
 
                 IInvocationFeatures invocationFeatures = invocationFeaturesFactory.Create();
                 invocationFeatures.Set<FunctionInvocation>(invocation);
+                invocationFeatures.Set<IExecutionRetryFeature>(invocation);
 
                 context = application.CreateContext(invocationFeatures);
                 invocationFeatures.Set<IFunctionBindingsFeature>(new GrpcFunctionBindingsFeature(context, request, outputBindingsInfoProvider));
+
+                if (functionInputConversionFeatureProvider.TryCreate(typeof(DefaultInputConversionFeature), out var conversion))
+                {                                    
+                    invocationFeatures.Set<IInputConversionFeature>(conversion!);
+                }
 
                 await application.InvokeFunctionAsync(context);
 

@@ -2,7 +2,6 @@
 
   <PropertyGroup>
     <TargetFramework>net5.0</TargetFramework>
-
     <IsPackable>false</IsPackable>
     <NoWarn>$(NoWarn);NU1701</NoWarn>
   </PropertyGroup>
@@ -16,10 +15,11 @@
     </PackageReference>
     <PackageReference Include="coverlet.collector" Version="1.2.0" />
     <PackageReference Include="Microsoft.CodeAnalysis.CSharp.Analyzer.Testing.XUnit" Version="1.0.1-beta1.21126.1" />
+    <PackageReference Include="Microsoft.CodeAnalysis.CSharp.CodeFix.Testing.XUnit" Version="1.1.0" />
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\..\..\extensions\Worker.Extensions.Abstractions\Worker.Extensions.Abstractions.csproj" />
+    <ProjectReference Include="..\..\..\extensions\Worker.Extensions.Abstractions\src\Worker.Extensions.Abstractions.csproj" />
     <ProjectReference Include="..\..\..\sdk\Sdk.Analyzers\Sdk.Analyzers.csproj" />
     <ProjectReference Include="..\..\..\src\DotNetWorker\DotNetWorker.csproj" />
   </ItemGroup>
